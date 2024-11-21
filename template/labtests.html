@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Lab Management System</title>
+</head>
+<body>
+<div class="container-fluid mt-5">
+    <h1 class="text-center alert alert-danger">Lab Test Information</h1>
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <h3>Lab Tests <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">Add Test</button></h3>
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="form-group">
+                    <input type="text" name="testid" class="form-control" placeholder="Enter Test ID">
+                </div>
+                <button type="submit" class="btn btn-primary my-3">Search</button>
+            </form>
+
+            <!-- Add New Test Modal -->
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add New Test</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('insert') }}" method="POST">
+                                <div class="form-group">
+                                    <label>Test ID</label>
+                                    <input type="text" name="testid" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Test Name</label>
+                                    <input type="text" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input type="text" name="description" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cost</label>
+                                    <input type="number" name="cost" class="form-control" step="0.01">
+                                </div>
+                                <button type="submit" class="btn btn-primary my-3">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Test Name</th>
+                        <th>Description</th>
+                        <th>Cost</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in tests %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ row[0] }}">Edit</button>
+                            <a href="/delete/{{ row[0] }}" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+
+                    <!-- Edit Test Modal -->
+                    <div id="editModal{{ row[0] }}" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit Test</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('update') }}" method="POST">
+                                        <input type="hidden" name="testid" value="{{ row[0] }}">
+                                        <div class="form-group">
+                                            <label>Test Name</label>
+                                            <input type="text" name="name" class="form-control" value="{{ row[1] }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <input type="text" name="description" class="form-control" value="{{ row[2] }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Cost</label>
+                                            <input type="number" name="cost" class="form-control" value="{{ row[3] }}" step="0.01">
+                                        </div>
+                                        <button type="submit" class="btn btn-success my-3">Update</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
